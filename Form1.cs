@@ -222,7 +222,7 @@ namespace Subtitle_Printer
                 }
                 if (currentline < 0 || currentline >= textBox.Lines.Length) { return; }
                 text = textBox.Lines[currentline];
-                while (text.EndsWith(" ") || text.EndsWith("　")) { text.Remove(text.LastIndexOf(' '), 1); }
+                while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.LastIndexOf(' '), 1); }
                 if (text.EndsWith(":") || text.EndsWith("：")) text = "";
                 if (text.Contains("%")) text = text.Split('%')[0];
                 else if (text.Contains("％")) text = text.Split('％')[0];
