@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,7 +28,7 @@ namespace Subtitle_Printer
                 Multiline = Reference_TextBox.Multiline,
                 Anchor = Reference_TextBox.Anchor,
                 Margin = Reference_TextBox.Margin,
-                Text = "ImeTextBox",
+                Text = "",
                 WordWrap = Reference_TextBox.WordWrap,
                 Font = Reference_TextBox.Font
             };
@@ -59,6 +60,35 @@ namespace Subtitle_Printer
                 PrintingFont.Dispose();
                 PrintingFont = fontDialog1.Font;
                 Print_Subtitle();
+            }
+        }
+
+        private void Button4_Click(object sender, EventArgs e)
+        {
+            saveFileDialog1.FileName = "Subtitle.txt";
+            saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
+            saveFileDialog1.InitialDirectory = Environment.CurrentDirectory;
+            if(saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                var stream = saveFileDialog1.OpenFile();
+                var sw = new StreamWriter(stream);
+                sw.Write(textBox.Text);
+                sw.Close();
+                stream.Close();
+            }
+        }
+
+        private void Button5_Click(object sender, EventArgs e)
+        {
+            openFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
+            openFileDialog1.InitialDirectory = Environment.CurrentDirectory;
+            if (openFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                var stream = openFileDialog1.OpenFile();
+                var sw = new StreamReader(stream);
+                textBox.Text = sw.ReadToEnd();
+                sw.Close();
+                stream.Close();
             }
         }
 
@@ -192,8 +222,10 @@ namespace Subtitle_Printer
                 }
                 if (currentline < 0 || currentline >= textBox.Lines.Length) { return; }
                 text = textBox.Lines[currentline];
-                if (text.EndsWith(":")) text = "";
+                while (text.EndsWith(" ") || text.EndsWith("　")) { text.Remove(text.LastIndexOf(' '), 1); }
+                if (text.EndsWith(":") || text.EndsWith("：")) text = "";
                 if (text.Contains("%")) text = text.Split('%')[0];
+                else if (text.Contains("％")) text = text.Split('％')[0];
             }
             //PictureBox1に表示する
             pictureBox1.Image = Graphicer(text);
@@ -206,10 +238,12 @@ namespace Subtitle_Printer
                 string text = "";
                 if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
                 if (textBox.Lines[currentline].Length != 0)
-                { 
+                {
                     text = textBox.Lines[currentline];
-                    if (text.EndsWith(":")) continue;
+                    while (text.EndsWith(" ") || text.EndsWith("　")) { text.Remove(text.LastIndexOf(' '), 1); }
+                    if (text.EndsWith(":") || text.EndsWith("：")) continue;
                     if (text.Contains("%")) text = text.Split('%')[0];
+                    else if (text.Contains("％")) text = text.Split('％')[0];
                     Graphicer(text).Save(String.Format("Line{0}.bmp", currentline));
                 }
             }
