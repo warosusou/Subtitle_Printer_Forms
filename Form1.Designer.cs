@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
@@ -39,13 +40,15 @@
             this.Reference_TextBox = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
-            this.button5 = new System.Windows.Forms.Button();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.panel2.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -65,6 +68,16 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(892, 31);
             this.panel1.TabIndex = 1;
+            // 
+            // button5
+            // 
+            this.button5.Location = new System.Drawing.Point(797, 3);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(90, 23);
+            this.button5.TabIndex = 7;
+            this.button5.Text = "テキスト読込";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.Button5_Click);
             // 
             // button4
             // 
@@ -152,7 +165,7 @@
             this.Reference_TextBox.Location = new System.Drawing.Point(12, 50);
             this.Reference_TextBox.Multiline = true;
             this.Reference_TextBox.Name = "Reference_TextBox";
-            this.Reference_TextBox.Size = new System.Drawing.Size(892, 275);
+            this.Reference_TextBox.Size = new System.Drawing.Size(892, 279);
             this.Reference_TextBox.TabIndex = 2;
             this.Reference_TextBox.Text = "Reference TextBox";
             this.Reference_TextBox.WordWrap = false;
@@ -166,16 +179,6 @@
             this.pictureBox1.TabIndex = 3;
             this.pictureBox1.TabStop = false;
             // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(797, 3);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(90, 23);
-            this.button5.TabIndex = 7;
-            this.button5.Text = "テキスト読込";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.Button5_Click);
-            // 
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
@@ -187,16 +190,33 @@
             this.panel2.AutoScroll = true;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.pictureBox1);
-            this.panel2.Location = new System.Drawing.Point(12, 331);
+            this.panel2.Location = new System.Drawing.Point(12, 335);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(892, 156);
             this.panel2.TabIndex = 4;
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabel1});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 494);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(916, 22);
+            this.statusStrip1.TabIndex = 5;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabel1
+            // 
+            this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(118, 17);
+            this.toolStripStatusLabel1.Text = "toolStripStatusLabel1";
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(916, 497);
+            this.ClientSize = new System.Drawing.Size(916, 516);
+            this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.Reference_TextBox);
             this.Controls.Add(this.panel1);
@@ -206,6 +226,8 @@
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.panel2.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -227,6 +249,8 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
     }
 }
 
