@@ -20,6 +20,8 @@ namespace Subtitle_Printer
         Font PrintingFont;
         string text_path = "";
         string OriginalFormTitle;
+        bool Modified = false;
+
         public Form1()
         {
             InitializeComponent();
@@ -46,7 +48,45 @@ namespace Subtitle_Printer
             PrintingFont = new Font("メイリオ", 20);
             toolStripStatusLabel1.Text = "";
             OriginalFormTitle = this.Text;
+            this.Text += " - 無題";
+            this.ActiveControl = textBox;
             LineChangeDetector();
+        }
+
+        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (!Modified) return;
+            string name;
+            if (text_path == "") name = "無題";
+            else name = new DirectoryInfo(text_path).Name;
+            var sd = new SaveDialog(name);
+            switch (sd.ShowDialog())
+            {
+                case DialogResult.Yes:
+                    if (text_path == "")
+                    {
+                        string path = Environment.CurrentDirectory;
+                        saveFileDialog1.FileName = "Subtitle.txt";
+                        saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
+                        saveFileDialog1.InitialDirectory = path;
+                        if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                        {
+                            SaveText(text_path);
+                        }
+                        else e.Cancel = true;
+                    }
+                    else
+                    {
+                        SaveText(text_path);
+                    }
+                    break;
+                case DialogResult.No:
+                    break;
+                case DialogResult.Cancel:
+                    e.Cancel = true;
+                    break;
+            }
+
         }
 
         private void Button2_Click(object sender, EventArgs e)
@@ -105,6 +145,8 @@ namespace Subtitle_Printer
 
         private void TextBox_KeyUp(object sender, KeyEventArgs e)
         {
+            if (!Modified) this.Text += " *";
+            Modified = true;
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Back || e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown || e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
             {
                 var t = new Timer { Interval = 10, Enabled = true };
@@ -213,6 +255,7 @@ namespace Subtitle_Printer
             sw.Close();
             Notice(String.Format("{0}として保存しました", new DirectoryInfo(path).Name));
             this.Text = OriginalFormTitle + " - "  + new DirectoryInfo(path).Name;
+            Modified = false;
         }
 
         private void LoadText(string path)
@@ -222,6 +265,7 @@ namespace Subtitle_Printer
             sw.Close();
             Notice(String.Format("{0}を読み込みました", new DirectoryInfo(path).Name));
             this.Text = OriginalFormTitle + " - " + new DirectoryInfo(path).Name;
+            Modified = false;
         }
 
         private void Notice(string message)
