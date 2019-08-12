@@ -177,7 +177,7 @@
             this.Reference_TextBox.Location = new System.Drawing.Point(12, 50);
             this.Reference_TextBox.Multiline = true;
             this.Reference_TextBox.Name = "Reference_TextBox";
-            this.Reference_TextBox.Size = new System.Drawing.Size(892, 245);
+            this.Reference_TextBox.Size = new System.Drawing.Size(892, 333);
             this.Reference_TextBox.TabIndex = 2;
             this.Reference_TextBox.Text = "Reference TextBox";
             this.Reference_TextBox.WordWrap = false;
@@ -202,9 +202,9 @@
             this.panel2.AutoScroll = true;
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.panel2.Controls.Add(this.pictureBox1);
-            this.panel2.Location = new System.Drawing.Point(12, 301);
+            this.panel2.Location = new System.Drawing.Point(12, 389);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(892, 190);
+            this.panel2.Size = new System.Drawing.Size(892, 102);
             this.panel2.TabIndex = 4;
             // 
             // statusStrip1

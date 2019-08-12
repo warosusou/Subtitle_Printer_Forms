@@ -6,6 +6,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -340,6 +341,16 @@ namespace Subtitle_Printer
 
         private void Save_Subtitles()
         {
+            DirectoryInfo di = new DirectoryInfo(Environment.CurrentDirectory);
+            List<string> files = new List<string>();
+            Regex r = new Regex(@"Line\d*\.bmp");
+            foreach(var f in di.GetFiles("*.bmp"))
+            {
+                if (r.IsMatch(f.Name))
+                {
+                    new FileInfo(f.FullName).Delete();
+                }
+            }
             for (int currentline = 0; currentline < textBox.Lines.Length; currentline++)
             {
                 string text = "";
