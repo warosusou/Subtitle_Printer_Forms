@@ -41,7 +41,6 @@ namespace Subtitle_Printer
             textBox.ImeCompositionHira += TextBox_ImeCompositionHira;
             textBox.TextChanged += TextBox_TextChanged;
             textBox.KeyDown += TextBox_KeyDown;
-            textBox.KeyUp += TextBox_KeyUp;
             textBox.KeyPress += TextBox_KeyPress;
             textBox.Click += TextBox_Click;
             this.Controls.Add(textBox);
@@ -156,42 +155,6 @@ namespace Subtitle_Printer
             LineChangeDetector();
         }
 
-        private void TextBox_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (!Modified) this.Text += " *";
-            Modified = true;
-            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Back || e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown || e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
-            {
-                var t = new Timer { Interval = 10, Enabled = true };
-                t.Tick += (s, ev) =>
-                  {
-                      t.Enabled = false;
-                      LineChangeDetector();
-                  };
-            }
-            else if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
-            {
-                if (text_path == "")
-                {
-                    string path;
-                    if (text_path == "") { path = Environment.CurrentDirectory; }
-                    else { path = new DirectoryInfo(text_path).Parent.FullName; }
-                    saveFileDialog1.FileName = "Subtitle.txt";
-                    saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
-                    saveFileDialog1.InitialDirectory = path;
-                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
-                    {
-                        text_path = saveFileDialog1.FileName;
-                        SaveText(text_path);
-                    }
-                }
-                else
-                {
-                    SaveText(text_path);
-                }
-            }
-        }
-
         private void TextBox_Click(object sender, EventArgs e)
         {
             LineChangeDetector();
@@ -233,7 +196,38 @@ namespace Subtitle_Printer
                 Leave_EQmode();
             }*/
             //}
-
+            if (!Modified) this.Text += " *";
+            Modified = true;
+            if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Back || e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown || e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
+            {
+                var t = new Timer { Interval = 10, Enabled = true };
+                t.Tick += (s, ev) =>
+                {
+                    t.Enabled = false;
+                    LineChangeDetector();
+                };
+            }
+            else if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
+            {
+                if (text_path == "")
+                {
+                    string path;
+                    if (text_path == "") { path = Environment.CurrentDirectory; }
+                    else { path = new DirectoryInfo(text_path).Parent.FullName; }
+                    saveFileDialog1.FileName = "Subtitle.txt";
+                    saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
+                    saveFileDialog1.InitialDirectory = path;
+                    if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+                    {
+                        text_path = saveFileDialog1.FileName;
+                        SaveText(text_path);
+                    }
+                }
+                else
+                {
+                    SaveText(text_path);
+                }
+            }
         }
 
         private void TextBox_ImeCompositionHira(object sender, ImeReadableTextBox.ImeCompositionEventArgs e)
