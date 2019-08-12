@@ -92,6 +92,7 @@ namespace Subtitle_Printer
 
         private void Button2_Click(object sender, EventArgs e)
         {
+            fontDialog1.Font = new Font(textBox.Font.Name, textBox.Font.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
             {
                 textBox.Font = fontDialog1.Font;
@@ -100,6 +101,7 @@ namespace Subtitle_Printer
 
         private void Button3_Click(object sender, EventArgs e)
         {
+            fontDialog1.Font = new Font(PrintingFont.Name, PrintingFont.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
             {
                 PrintingFont.Dispose();
