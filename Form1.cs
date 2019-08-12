@@ -34,7 +34,8 @@ namespace Subtitle_Printer
                 Margin = Reference_TextBox.Margin,
                 Text = "",
                 WordWrap = Reference_TextBox.WordWrap,
-                Font = Reference_TextBox.Font
+                Font = Reference_TextBox.Font,
+                AcceptsTab = true
             };
             textBox.ImeCompositionHira += TextBox_ImeCompositionHira;
             textBox.TextChanged += TextBox_TextChanged;
@@ -130,6 +131,15 @@ namespace Subtitle_Printer
             {
                 text_path = openFileDialog1.FileName;
                 LoadText(text_path);
+            }
+        }
+
+        private void Button6_Click(object sender, EventArgs e)
+        {
+            var r = new ResolutionForm(pictureBox1.Size);
+            if(r.ShowDialog() == DialogResult.OK)
+            {
+                pictureBox1.Size = r.size;
             }
         }
 
