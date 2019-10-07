@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using WpfMath;
+using WpfMath.Exceptions;
 
 namespace Subtitle_Printer
 {
@@ -610,7 +611,7 @@ namespace Subtitle_Printer
                 }
                 return bitmap;
             }
-            catch (WpfMath.Exceptions.TexParseException)
+            catch (Exception e) when(e is TexParseException || e is TexCharacterMappingNotFoundException)
             {
                 return Graphicer("!!TexError!!");
             }
