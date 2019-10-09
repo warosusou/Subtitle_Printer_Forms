@@ -113,7 +113,7 @@ namespace Subtitle_Printer
             {
                 PrintingFont.Dispose();
                 PrintingFont = fontDialog1.Font;
-                Print_Subtitle();
+                PrintSubtitle();
             }
         }
 
@@ -167,7 +167,7 @@ namespace Subtitle_Printer
 
         private void RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            Print_Subtitle();
+            PrintSubtitle();
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)
@@ -365,14 +365,14 @@ namespace Subtitle_Printer
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            Save_Subtitles();
+            SaveSubtitles();
         }
 
         private void LineChangeDetector()
         {
             int currentline = 0;
             int charactors = 0;
-            if (textBox.Lines.Length == 0) { Print_Subtitle(); return; }
+            if (textBox.Lines.Length == 0) { PrintSubtitle(); return; }
             while (true)
             {
                 charactors += textBox.Lines[currentline].Length + 1;//+1は改行コード
@@ -381,12 +381,11 @@ namespace Subtitle_Printer
                 currentline++;
             }
             if (currentline != this.currentline) { this.currentline = currentline; }
-            Print_Subtitle();
+            PrintSubtitle();
         }
 
-        private void Print_Subtitle()
+        private void PrintSubtitle()
         {
-            string text = "";
             Bitmap result = null;
             if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
             if (textBox.Lines.Length != 0)
@@ -401,64 +400,14 @@ namespace Subtitle_Printer
                     currentline++;
                 }
                 if (currentline < 0 || currentline >= textBox.Lines.Length) { return; }
-                text = textBox.Lines[currentline];
-                while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
-                if (text.EndsWith(":") || text.EndsWith("：")) text = "";
-                if (text.Contains("%")) text = text.Split('%')[0];
-                else if (text.Contains("％")) text = text.Split('％')[0];
-                if (text.Contains(begintag) && text.Contains(endtag))
-                {
-                    string s1, tex, s2;
-                    s1 = text.Substring(0, text.IndexOf(begintag));
-                    if (text.IndexOf(begintag) + begintag.Length < 0 || text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length < 0) return;
-                    tex = text.Substring(text.IndexOf(begintag) + begintag.Length, text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length);
-                    s2 = text.Substring(text.IndexOf(endtag) + endtag.Length);
-                    Bitmap b1, bittex, b2;
-                    b1 = Graphicer(s1);
-                    bittex = TexPrinter(tex);
-                    b2 = Graphicer(s2);
-                    if (bittex != null)
-                    {
-                        int b1_width = 0;
-                        int b2_width = 0;
-                        if (b1 != null)
-                        {
-                            b1_width = b1.Width;
-                        }
-                        if (b2 != null)
-                        {
-                            b2_width = b2.Width;
-                        }
-                        result = new Bitmap(b1_width + bittex.Width + b2_width, pictureBox1.Height);
-                        using (Graphics g = Graphics.FromImage(result))
-                        {
-                            var bittex_heightpos = result.Height - bittex.Height;
-                            if (bittex_heightpos < 0)
-                            {
-                                bittex = Shrink(bittex, result.Height);
-                                bittex_heightpos = 0;
-                            }
-                            if (b1 != null) g.DrawImage(b1, 0, 0);
-                            g.DrawImage(bittex, b1_width, bittex_heightpos / 2);
-                            if (b2 != null) g.DrawImage(b2, b1_width + bittex.Width, 0);
-                        }
-                    }
-                    else
-                    {
-                        result = Graphicer(s1 + s2);
-                    }
-                }
-                else
-                {
-                    result = Graphicer(text);
-                }
+                result = LineBitmap(textBox.Lines[currentline]);
             }
             if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
             //PictureBox1に表示する
             pictureBox1.Image = result;
         }
 
-        private void Save_Subtitles()
+        private void SaveSubtitles()
         {
             DirectoryInfo di = new DirectoryInfo(Environment.CurrentDirectory);
             List<string> files = new List<string>();
@@ -474,64 +423,19 @@ namespace Subtitle_Printer
             {
                 string text = "";
                 Bitmap result = null;
-                if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
                 if (textBox.Lines[currentline].Length != 0)
                 {
+                    result = LineBitmap(textBox.Lines[currentline]);
                     text = textBox.Lines[currentline];
                     while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
                     if (text.EndsWith(":") || text.EndsWith("：")) continue;
                     if (text.Contains("%")) text = text.Split('%')[0];
                     else if (text.Contains("％")) text = text.Split('％')[0];
                     if (text == "") continue;
-                    if (text.Contains(begintag) && text.Contains(endtag))
-                    {
-                        string s1, tex, s2;
-                        s1 = text.Substring(0, text.IndexOf(begintag));
-                        if (text.IndexOf(begintag) + begintag.Length < 0 || text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length < 0) return;
-                        tex = text.Substring(text.IndexOf(begintag) + begintag.Length, text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length);
-                        s2 = text.Substring(text.IndexOf(endtag) + endtag.Length);
-                        if (tex != "")
-                        {
-                            Bitmap b1, bittex, b2;
-                            b1 = Graphicer(s1);
-                            bittex = TexPrinter(tex);
-                            b2 = Graphicer(s2);
-                            int b1_width = 0;
-                            int b2_width = 0;
-                            if (b1 != null)
-                            {
-                                b1_width = b1.Width;
-                            }
-                            if (b2 != null)
-                            {
-                                b2_width = b2.Width;
-                            }
-                            result = new Bitmap(b1_width + bittex.Width + b2_width, pictureBox1.Height);
-                            using (Graphics g = Graphics.FromImage(result))
-                            {
-                                var bittex_heightpos = result.Height - bittex.Height;
-                                if (bittex_heightpos < 0)
-                                {
-                                    bittex = Shrink(bittex, result.Height);
-                                    bittex_heightpos = 0;
-                                }
-                                if (b1 != null) g.DrawImage(b1, 0, 0);
-                                g.DrawImage(bittex, b1_width, bittex_heightpos / 2);
-                                if (b2 != null) g.DrawImage(b2, b1_width + bittex.Width, 0);
-                            }
-                        }
-                        else
-                        {
-                            result = Graphicer(s1 + s2);
-                        }
-                    }
-                    else
-                    {
-                        result = Graphicer(text);
-                    }
                     if (result != null) result.Save(String.Format("Line{0}.bmp", currentline));
                 }
             }
+            Notice("印刷完了");
         }
 
         private Bitmap Graphicer(string text)
@@ -626,6 +530,63 @@ namespace Subtitle_Printer
             {
                 g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
                 g.DrawImage(bm, 0, 0, width, height);
+            }
+            return result;
+        }
+
+        private Bitmap LineBitmap(string text)
+        {
+            Bitmap result = null;
+            while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
+            if (text.EndsWith(":") || text.EndsWith("：")) text = "";
+            if (text.Contains("%")) text = text.Split('%')[0];
+            else if (text.Contains("％")) text = text.Split('％')[0];
+            if(text == "") { return result; }
+            if (text.Contains(begintag) && text.Contains(endtag))
+            {
+                string s1, tex, s2;
+                s1 = text.Substring(0, text.IndexOf(begintag));
+                if (text.IndexOf(begintag) + begintag.Length < 0 || text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length < 0) return result;
+                tex = text.Substring(text.IndexOf(begintag) + begintag.Length, text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length);
+                s2 = text.Substring(text.IndexOf(endtag) + endtag.Length);
+                Bitmap b1, bittex, b2;
+                b1 = Graphicer(s1);
+                bittex = TexPrinter(tex);
+                b2 = Graphicer(s2);
+                if (bittex != null)
+                {
+                    int b1_width = 0;
+                    int b2_width = 0;
+                    if (b1 != null)
+                    {
+                        b1_width = b1.Width;
+                    }
+                    if (b2 != null)
+                    {
+                        b2_width = b2.Width;
+                    }
+                    result = new Bitmap(b1_width + bittex.Width + b2_width, pictureBox1.Height);
+                    using (Graphics g = Graphics.FromImage(result))
+                    {
+                        var bittex_heightpos = result.Height - bittex.Height;
+                        if (bittex_heightpos < 0)
+                        {
+                            bittex = Shrink(bittex, result.Height);
+                            bittex_heightpos = 0;
+                        }
+                        if (b1 != null) g.DrawImage(b1, 0, 0);
+                        g.DrawImage(bittex, b1_width, bittex_heightpos / 2);
+                        if (b2 != null) g.DrawImage(b2, b1_width + bittex.Width, 0);
+                    }
+                }
+                else
+                {
+                    result = Graphicer(s1 + s2);
+                }
+            }
+            else
+            {
+                result = Graphicer(text);
             }
             return result;
         }
