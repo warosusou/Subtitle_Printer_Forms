@@ -23,11 +23,17 @@ namespace Subtitle_Printer
         Color TextColor;
         int currentline = -1;
         int lasttextag = -1;
-        Font PrintingFont;
+        Font printingfont;
         string text_path = "";
         string OriginalFormTitle;
         bool Modified = false;
         bool EQ = false;
+
+        Font PrintingFont
+        {
+            get { return printingfont; }
+            set { printingfont = value; ImageGenerator.PrintingFont = printingfont; }
+        }
 
         public Form1()
         {
@@ -53,10 +59,13 @@ namespace Subtitle_Printer
             Reference_TextBox.Visible = false;
             TextColor = textBox.SelectionColor;
             PrintingFont = new Font("メイリオ", 20);
+            //ImageGenerator.Alignmentを設定さするためにradioButton_Checkedを発火
+            panel1.Controls.OfType<RadioButton>().Single(x => x.Checked == true).Checked = true;
             toolStripStatusLabel1.Text = "";
             OriginalFormTitle = this.Text;
             this.Text += " - 無題";
             this.ActiveControl = textBox;
+            ImageGenerator.pictureBox1 = pictureBox1.Size;
             LineChangeDetector();
             button7.Visible = false;
         }
@@ -167,6 +176,18 @@ namespace Subtitle_Printer
 
         private void RadioButton_CheckedChanged(object sender, EventArgs e)
         {
+            if (radioButton1.Checked)
+            {
+                ImageGenerator.Alignment = Alignment.Left;
+            }
+            else if (radioButton2.Checked)
+            {
+                ImageGenerator.Alignment = Alignment.Center;
+            }
+            else if (radioButton3.Checked)
+            {
+                ImageGenerator.Alignment = Alignment.Right;
+            }
             PrintSubtitle();
         }
 
@@ -274,6 +295,11 @@ namespace Subtitle_Printer
             */
         }
 
+        private void PictureBox1_SizeChanged(object sender, EventArgs e)
+        {
+            ImageGenerator.pictureBox1 = pictureBox1.Size;
+        }
+
         private void EnterEQmode()
         {
             EQ = true;
@@ -299,8 +325,8 @@ namespace Subtitle_Printer
             previousSelectionStart += begintag.Length;
             textBox.SelectionStart = previousSelectionStart;
             textBox.Text = textBox.Text.Insert(previousSelectionStart, endtag);
-            lasttextag =previousSelectionStart;
-            var t = new Timer { Interval = 1 ,Enabled=true};
+            lasttextag = previousSelectionStart;
+            var t = new Timer { Interval = 1, Enabled = true };
             t.Tick += (s, e) => { t.Enabled = false; textBox.SelectionStart = lasttextag; };
         }
 
@@ -438,89 +464,6 @@ namespace Subtitle_Printer
             Notice("印刷完了");
         }
 
-        private Bitmap Graphicer(string text)
-        {
-            string temp = text;
-            while (temp.EndsWith(" ") || temp.EndsWith("　")) { temp = temp.Remove(temp.Length - 1, 1); }
-            if (temp == "") return null;
-            PointF pt = new PointF(0, pictureBox1.Height / 2);
-            var strfmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
-            if (radioButton1.Checked)
-            {
-                strfmt.Alignment = StringAlignment.Near;
-            }
-            else if (radioButton2.Checked)
-            {
-                strfmt.Alignment = StringAlignment.Center;
-                pt = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
-            }
-            else if (radioButton3.Checked)
-            {
-                strfmt.Alignment = StringAlignment.Far;
-                pt = new PointF(pictureBox1.Width, pictureBox1.Height / 2);
-            }
-            SizeF size = new SizeF(pictureBox1.Width, pictureBox1.Height);
-            Bitmap canvas;
-            bool gotsize = false;
-            while (true)
-            {
-                //描画先とするImageオブジェクトを作成する
-                canvas = new Bitmap((int)size.Width, pictureBox1.Height);
-                //ImageオブジェクトのGraphicsオブジェクトを作成する
-                using (var g = Graphics.FromImage(canvas))
-                {
-                    using (var fnt = new Font(PrintingFont.Name, PrintingFont.Size))
-                    {
-                        //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
-                        g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
-                        g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
-                        //文字列を位置pt、黒で表示
-                        g.DrawString(text, fnt, Brushes.Black, pt, strfmt);
-                        if (gotsize) break;
-                        //画像サイズを取得
-                        size = g.MeasureString(text, fnt);
-                        if (size.Width == 0) break;
-                        gotsize = true;
-                        canvas.Dispose();
-                    }
-                }
-            }
-            strfmt.Dispose();
-            return canvas;
-        }
-
-        private Bitmap TexPrinter(string latex)
-        {
-            try
-            {
-                if (latex == "") return null;
-                while (latex.EndsWith(" ") || latex.EndsWith("　")) { latex = latex.Remove(latex.Length - 1, 1); }
-                Bitmap bitmap = null;
-
-                var parser = new TexFormulaParser();
-                var formula = parser.Parse(latex);
-                formula.TextStyle = "{StaticResource ClearTypeFormula}";
-                var renderer = formula.GetRenderer(TexStyle.Display, PrintingFont.Size, "Arial");
-                var bitmapsourse = renderer.RenderToBitmap(0, 0);
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(bitmapsourse));
-                using (var ms = new MemoryStream())
-                {
-                    encoder.Save(ms);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    using (var temp = new Bitmap(ms))
-                    {
-                        bitmap = new Bitmap(temp);
-                    }
-                }
-                return bitmap;
-            }
-            catch (Exception e) when(e is TexParseException || e is TexCharacterMappingNotFoundException)
-            {
-                return Graphicer("!!TexError!!");
-            }
-        }
-
         private Bitmap Shrink(Bitmap bm, int height)
         {
             Bitmap result = null;
@@ -541,18 +484,20 @@ namespace Subtitle_Printer
             if (text.EndsWith(":") || text.EndsWith("：")) text = "";
             if (text.Contains("%")) text = text.Split('%')[0];
             else if (text.Contains("％")) text = text.Split('％')[0];
-            if(text == "") { return result; }
-            if (text.Contains(begintag) && text.Contains(endtag))
+            if (text == "") { return result; }
+            if (text.Contains(begintag) && text.Length > text.IndexOf(begintag) + begintag.Length && text.Substring(text.IndexOf(begintag) + begintag.Length).Contains(endtag))
             {
+                var sb = new StringBuilder(text);
+
                 string s1, tex, s2;
                 s1 = text.Substring(0, text.IndexOf(begintag));
                 if (text.IndexOf(begintag) + begintag.Length < 0 || text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length < 0) return result;
                 tex = text.Substring(text.IndexOf(begintag) + begintag.Length, text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length);
                 s2 = text.Substring(text.IndexOf(endtag) + endtag.Length);
                 Bitmap b1, bittex, b2;
-                b1 = Graphicer(s1);
-                bittex = TexPrinter(tex);
-                b2 = Graphicer(s2);
+                b1 = ImageGenerator.Graphicer(s1);
+                bittex = ImageGenerator.TexPrinter(tex);
+                b2 = ImageGenerator.Graphicer(s2);
                 if (bittex != null)
                 {
                     int b1_width = 0;
@@ -581,14 +526,133 @@ namespace Subtitle_Printer
                 }
                 else
                 {
-                    result = Graphicer(s1 + s2);
+                    result = ImageGenerator.Graphicer(s1 + s2);
                 }
             }
             else
             {
-                result = Graphicer(text);
+                result = ImageGenerator.Graphicer(text);
             }
             return result;
+        }
+
+        static class ImageGenerator
+        {
+            internal static Font PrintingFont;
+            internal static Size pictureBox1;
+            internal static Alignment Alignment;
+
+            internal static Bitmap TexPrinter(string latex)
+            {
+                try
+                {
+                    if (latex == "") return null;
+                    while (latex.EndsWith(" ") || latex.EndsWith("　")) { latex = latex.Remove(latex.Length - 1, 1); }
+                    Bitmap bitmap = null;
+
+                    var parser = new TexFormulaParser();
+                    var formula = parser.Parse(latex);
+                    formula.TextStyle = "{StaticResource ClearTypeFormula}";
+                    var renderer = formula.GetRenderer(TexStyle.Display, PrintingFont.Size, "Arial");
+                    if(renderer.RenderSize.Width == 0 || renderer.RenderSize.Height == 0) { return bitmap; }
+                    var bitmapsourse = renderer.RenderToBitmap(0, 0);
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmapsourse));
+                    using (var ms = new MemoryStream())
+                    {
+                        encoder.Save(ms);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        using (var temp = new Bitmap(ms))
+                        {
+                            bitmap = new Bitmap(temp);
+                        }
+                    }
+                    return bitmap;
+                }
+                catch (Exception e) when (e is TexParseException || e is TexCharacterMappingNotFoundException)
+                {
+                    return Graphicer("!!TexError!!");
+                }
+            }
+
+            internal static Bitmap Graphicer(string text)
+            {
+                string temp = text;
+                while (temp.EndsWith(" ") || temp.EndsWith("　")) { temp = temp.Remove(temp.Length - 1, 1); }
+                if (temp == "") return null;
+                PointF pt = new PointF(0, pictureBox1.Height / 2);
+                var strfmt = new StringFormat { Alignment = StringAlignment.Near, LineAlignment = StringAlignment.Center };
+                switch (Alignment)
+                {
+                    case Alignment.Left:
+                        strfmt.Alignment = StringAlignment.Near;
+                        break;
+                    case Alignment.Center:
+                        strfmt.Alignment = StringAlignment.Center;
+                        pt = new PointF(pictureBox1.Width / 2, pictureBox1.Height / 2);
+                        break;
+                    case Alignment.Right:
+                        strfmt.Alignment = StringAlignment.Far;
+                        pt = new PointF(pictureBox1.Width, pictureBox1.Height / 2);
+                        break;
+                }
+                SizeF size = new SizeF(pictureBox1.Width, pictureBox1.Height);
+                Bitmap canvas;
+                bool gotsize = false;
+                while (true)
+                {
+                    //描画先とするImageオブジェクトを作成する
+                    canvas = new Bitmap((int)size.Width, pictureBox1.Height);
+                    //ImageオブジェクトのGraphicsオブジェクトを作成する
+                    using (var g = Graphics.FromImage(canvas))
+                    {
+                        using (var fnt = new Font(PrintingFont.Name, PrintingFont.Size))
+                        {
+                            //g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+                            g.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.HighQuality;
+                            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.AntiAliasGridFit;
+                            //文字列を位置pt、黒で表示
+                            g.DrawString(text, fnt, Brushes.Black, pt, strfmt);
+                            if (gotsize) break;
+                            //画像サイズを取得
+                            size = g.MeasureString(text, fnt);
+                            if (size.Width == 0) break;
+                            gotsize = true;
+                            canvas.Dispose();
+                        }
+                    }
+                }
+                strfmt.Dispose();
+                return canvas;
+            }
+        }
+        struct Line
+        {
+            private string text;
+            public Bitmap Image { get; private set; }
+            public string Text
+            {
+                get
+                {
+                    return text;
+                }
+                set
+                {
+                    text = value;
+                    if (text.StartsWith(begintag) && text.EndsWith(endtag))
+                    {
+                        Image = ImageGenerator.TexPrinter(text);
+                    }
+                    else
+                    {
+                        Image = ImageGenerator.Graphicer(text);
+                    }
+                }
+            }
+        }
+        enum Alignment
+        {
+            Left, Center, Right
         }
     }
 }
