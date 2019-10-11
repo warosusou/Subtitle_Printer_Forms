@@ -17,8 +17,8 @@ namespace Subtitle_Printer
 {
     public partial class Form1 : Form
     {
-        const string begintag = "<Tex>";
-        const string endtag = "</Tex>";
+        const string begintag = "$";
+        const string endtag = "$";
         ImeReadableTextBox textBox;
         Color TextColor;
         int currentline = -1;
@@ -32,7 +32,7 @@ namespace Subtitle_Printer
         Font PrintingFont
         {
             get { return printingfont; }
-            set { printingfont = value; ImageGenerator.PrintingFont = printingfont; }
+            set { printingfont = value; ImageDrawer.PrintingFont = printingfont; }
         }
 
         public Form1()
@@ -65,9 +65,11 @@ namespace Subtitle_Printer
             OriginalFormTitle = this.Text;
             this.Text += " - 無題";
             this.ActiveControl = textBox;
-            ImageGenerator.pictureBox1 = pictureBox1.Size;
+            ImageDrawer.pictureBox1 = pictureBox1.Size;
             LineChangeDetector();
-            button7.Visible = false;
+            button7.Visible = true;
+            ImageDrawer.EQSize = PrintingFont.Size;
+            ImageDrawer.AutoShrink = true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -163,30 +165,29 @@ namespace Subtitle_Printer
 
         private void Button7_Click(object sender, EventArgs e)
         {
-            /*
-            if (EQ)
+            var f = new EqFontSizeForm(ImageDrawer.pictureBox1,ImageDrawer.EQSize,ImageDrawer.AutoShrink);
+            f.ShowDialog();
+            if(f.DialogResult == DialogResult.OK)
             {
-                LeaveEQmode();
+                ImageDrawer.EQSize = f.EQSize;
+                ImageDrawer.AutoShrink = f.AutoShrink;
+                PrintSubtitle();
             }
-            else
-            {
-                EnterEQmode();
-            }*/
         }
 
         private void RadioButton_CheckedChanged(object sender, EventArgs e)
         {
             if (radioButton1.Checked)
             {
-                ImageGenerator.Alignment = Alignment.Left;
+                ImageDrawer.Alignment = Alignment.Left;
             }
             else if (radioButton2.Checked)
             {
-                ImageGenerator.Alignment = Alignment.Center;
+                ImageDrawer.Alignment = Alignment.Center;
             }
             else if (radioButton3.Checked)
             {
-                ImageGenerator.Alignment = Alignment.Right;
+                ImageDrawer.Alignment = Alignment.Right;
             }
             PrintSubtitle();
         }
@@ -293,11 +294,12 @@ namespace Subtitle_Printer
                 textBox.SelectionColor = Color.Red;
             }
             */
+            
         }
 
         private void PictureBox1_SizeChanged(object sender, EventArgs e)
         {
-            ImageGenerator.pictureBox1 = pictureBox1.Size;
+            ImageDrawer.pictureBox1 = pictureBox1.Size;
         }
 
         private void EnterEQmode()
@@ -426,7 +428,7 @@ namespace Subtitle_Printer
                     currentline++;
                 }
                 if (currentline < 0 || currentline >= textBox.Lines.Length) { return; }
-                result = LineBitmap(textBox.Lines[currentline]);
+                result = ImageDrawer.LineBitmap(textBox.Lines[currentline]);
             }
             if (pictureBox1.Image != null) pictureBox1.Image.Dispose();
             //PictureBox1に表示する
@@ -451,7 +453,7 @@ namespace Subtitle_Printer
                 Bitmap result = null;
                 if (textBox.Lines[currentline].Length != 0)
                 {
-                    result = LineBitmap(textBox.Lines[currentline]);
+                    result = ImageDrawer.LineBitmap(textBox.Lines[currentline]);
                     text = textBox.Lines[currentline];
                     while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
                     if (text.EndsWith(":") || text.EndsWith("：")) continue;
@@ -464,85 +466,20 @@ namespace Subtitle_Printer
             Notice("印刷完了");
         }
 
-        private Bitmap Shrink(Bitmap bm, int height)
-        {
-            Bitmap result = null;
-            var width = bm.Width * (bm.Height / height);
-            result = new Bitmap(width, height);
-            using (var g = Graphics.FromImage(result))
-            {
-                g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
-                g.DrawImage(bm, 0, 0, width, height);
-            }
-            return result;
-        }
-
-        private Bitmap LineBitmap(string text)
-        {
-            Bitmap result = null;
-            while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
-            if (text.EndsWith(":") || text.EndsWith("：")) text = "";
-            if (text.Contains("%")) text = text.Split('%')[0];
-            else if (text.Contains("％")) text = text.Split('％')[0];
-            if (text == "") { return result; }
-            if (text.Contains(begintag) && text.Length > text.IndexOf(begintag) + begintag.Length && text.Substring(text.IndexOf(begintag) + begintag.Length).Contains(endtag))
-            {
-                var sb = new StringBuilder(text);
-
-                string s1, tex, s2;
-                s1 = text.Substring(0, text.IndexOf(begintag));
-                if (text.IndexOf(begintag) + begintag.Length < 0 || text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length < 0) return result;
-                tex = text.Substring(text.IndexOf(begintag) + begintag.Length, text.IndexOf(endtag) - text.IndexOf(begintag) - begintag.Length);
-                s2 = text.Substring(text.IndexOf(endtag) + endtag.Length);
-                Bitmap b1, bittex, b2;
-                b1 = ImageGenerator.Graphicer(s1);
-                bittex = ImageGenerator.TexPrinter(tex);
-                b2 = ImageGenerator.Graphicer(s2);
-                if (bittex != null)
-                {
-                    int b1_width = 0;
-                    int b2_width = 0;
-                    if (b1 != null)
-                    {
-                        b1_width = b1.Width;
-                    }
-                    if (b2 != null)
-                    {
-                        b2_width = b2.Width;
-                    }
-                    result = new Bitmap(b1_width + bittex.Width + b2_width, pictureBox1.Height);
-                    using (Graphics g = Graphics.FromImage(result))
-                    {
-                        var bittex_heightpos = result.Height - bittex.Height;
-                        if (bittex_heightpos < 0)
-                        {
-                            bittex = Shrink(bittex, result.Height);
-                            bittex_heightpos = 0;
-                        }
-                        if (b1 != null) g.DrawImage(b1, 0, 0);
-                        g.DrawImage(bittex, b1_width, bittex_heightpos / 2);
-                        if (b2 != null) g.DrawImage(b2, b1_width + bittex.Width, 0);
-                    }
-                }
-                else
-                {
-                    result = ImageGenerator.Graphicer(s1 + s2);
-                }
-            }
-            else
-            {
-                result = ImageGenerator.Graphicer(text);
-            }
-            return result;
-        }
-
-        static class ImageGenerator
+        internal static class ImageDrawer
         {
             internal static Font PrintingFont;
             internal static Size pictureBox1;
             internal static Alignment Alignment;
+            internal static double EQSize;
+            internal static bool AutoShrink;
 
             internal static Bitmap TexPrinter(string latex)
+            {
+                return TexPrinter(latex, EQSize);
+            }
+
+            internal static Bitmap TexPrinter(string latex,double scale)
             {
                 try
                 {
@@ -553,7 +490,7 @@ namespace Subtitle_Printer
                     var parser = new TexFormulaParser();
                     var formula = parser.Parse(latex);
                     formula.TextStyle = "{StaticResource ClearTypeFormula}";
-                    var renderer = formula.GetRenderer(TexStyle.Display, PrintingFont.Size, "Arial");
+                    var renderer = formula.GetRenderer(TexStyle.Display, scale, "Arial");
                     if(renderer.RenderSize.Width == 0 || renderer.RenderSize.Height == 0) { return bitmap; }
                     var bitmapsourse = renderer.RenderToBitmap(0, 0);
                     var encoder = new PngBitmapEncoder();
@@ -625,8 +562,89 @@ namespace Subtitle_Printer
                 strfmt.Dispose();
                 return canvas;
             }
+
+            internal static Bitmap Shrink(Bitmap bm)
+            {
+                Bitmap result = null;
+                var width = bm.Width * (int)(bm.Height / (pictureBox1.Height * 0.95));
+                result = new Bitmap(width, (int)(pictureBox1.Height * 0.95));
+                using (var g = Graphics.FromImage(result))
+                {
+                    g.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                    g.DrawImage(bm, 0, 0, width, (int)(pictureBox1.Height * 0.95));
+                }
+                return result;
+            }
+
+            internal static Bitmap LineBitmap(string text)
+            {
+                Bitmap result = null;
+                while (text.EndsWith(" ") || text.EndsWith("　")) { text = text.Remove(text.Length - 1, 1); }
+                if (text.EndsWith(":") || text.EndsWith("：")) text = "";
+                if (text.Contains("%")) text = text.Split('%')[0];
+                else if (text.Contains("％")) text = text.Split('％')[0];
+                if (text == "") { return result; }
+                if (text.Contains(begintag) && text.Length > text.IndexOf(begintag) + begintag.Length && text.Substring(text.IndexOf(begintag) + begintag.Length).Contains(endtag))
+                {
+                    var sections = new List<Section>();
+                    int result_width = 0;
+                    int result_height = ImageDrawer.pictureBox1.Height;
+                    while (text.Length != 0)
+                    {
+                        string section = "";
+                        int begintagpos = text.IndexOf(begintag);
+                        if (begintagpos > 0)
+                        {
+                            section = text.Substring(0, begintagpos);
+                            text = text.Substring(begintagpos);
+                        }
+                        else if(begintagpos == 0 && text.IndexOf(endtag,begintagpos + 1) > begintagpos)
+                        {
+                            section = text.Substring(0, text.IndexOf(endtag,begintagpos + 1) + endtag.Length);
+                            if (text.IndexOf(endtag, begintagpos + 1) + endtag.Length < text.Length)
+                            {
+                                text = text.Substring(text.IndexOf(endtag,begintagpos + 1) + endtag.Length);
+                            }
+                            else
+                            {
+                                text = "";
+                            }
+                        }
+                        else
+                        {
+                            section = text;
+                            text = "";
+                        }
+                        if (section == "") { continue; }
+                        sections.Add(new Section(section));
+                    }
+                    sections.RemoveAll(x => x.Image == null || x.Image.Width == 0);
+                    foreach(var s in sections)
+                    {
+                        if (s.Image.Height > result_height && ImageDrawer.AutoShrink) { s.ShrinkImage(); }
+                        result_width += s.Image.Width;
+                    }
+                    if (result_width == 0) { return result; }
+                    result = new Bitmap(result_width, result_height);
+                    using (Graphics g = Graphics.FromImage(result))
+                    {
+                        int xpos = 0;
+                        foreach (var s in sections)
+                        {
+                            var ypos = (result.Height - s.Image.Height) / 2;
+                            g.DrawImage(s.Image, xpos, ypos);
+                            xpos += s.Image.Width;
+                        }
+                    }
+                }
+                else
+                {
+                    result = ImageDrawer.Graphicer(text);
+                }
+                return result;
+            }
         }
-        struct Line
+        class Section
         {
             private string text;
             public Bitmap Image { get; private set; }
@@ -639,18 +657,30 @@ namespace Subtitle_Printer
                 set
                 {
                     text = value;
-                    if (text.StartsWith(begintag) && text.EndsWith(endtag))
+                    if (text.Length >= begintag.Length + endtag.Length &&text.IndexOf(begintag) == 0 && text.IndexOf(endtag,text.IndexOf(begintag) + begintag.Length) == text.Length -1)
                     {
-                        Image = ImageGenerator.TexPrinter(text);
+                        text = text.Remove(0, begintag.Length).Remove(text.Length - 1 - endtag.Length, endtag.Length);
+                        Image = ImageDrawer.TexPrinter(text);
                     }
                     else
                     {
-                        Image = ImageGenerator.Graphicer(text);
+                        Image = ImageDrawer.Graphicer(text);
                     }
                 }
             }
+            public Section(string text)
+            {
+                this.text = "";
+                this.Image = null;
+                Text = text;
+            }
+
+            public void ShrinkImage()
+            {
+                Image = ImageDrawer.Shrink(Image);
+            }
         }
-        enum Alignment
+        internal enum Alignment
         {
             Left, Center, Right
         }

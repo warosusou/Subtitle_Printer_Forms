@@ -75,18 +75,17 @@
             // 
             // button7
             // 
-            this.button7.BackColor = System.Drawing.SystemColors.Control;
-            this.button7.Location = new System.Drawing.Point(636, 3);
+            this.button7.Location = new System.Drawing.Point(291, 3);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(25, 23);
+            this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 9;
-            this.button7.Text = "Σ";
+            this.button7.Text = "数式サイズ";
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Button7_Click);
             // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(522, 3);
+            this.button6.Location = new System.Drawing.Point(602, 3);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(75, 23);
             this.button6.TabIndex = 8;
@@ -130,14 +129,14 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(90, 23);
             this.button2.TabIndex = 4;
-            this.button2.Text = "フォント";
+            this.button2.Text = "エディタフォント";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.Button2_Click);
             // 
             // radioButton3
             // 
             this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(460, 6);
+            this.radioButton3.Location = new System.Drawing.Point(540, 6);
             this.radioButton3.Name = "radioButton3";
             this.radioButton3.Size = new System.Drawing.Size(56, 16);
             this.radioButton3.TabIndex = 3;
@@ -149,7 +148,7 @@
             // radioButton2
             // 
             this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(386, 6);
+            this.radioButton2.Location = new System.Drawing.Point(466, 6);
             this.radioButton2.Name = "radioButton2";
             this.radioButton2.Size = new System.Drawing.Size(68, 16);
             this.radioButton2.TabIndex = 2;
@@ -162,7 +161,7 @@
             // 
             this.radioButton1.AutoSize = true;
             this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(324, 6);
+            this.radioButton1.Location = new System.Drawing.Point(404, 6);
             this.radioButton1.Name = "radioButton1";
             this.radioButton1.Size = new System.Drawing.Size(56, 16);
             this.radioButton1.TabIndex = 1;

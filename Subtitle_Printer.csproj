@@ -60,11 +60,11 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form2.cs">
+    <Compile Include="EqFontSizeForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Form2.Designer.cs">
-      <DependentUpon>Form2.cs</DependentUpon>
+    <Compile Include="EqFontSizeForm.Designer.cs">
+      <DependentUpon>EqFontSizeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IME_Readable_TextBox.cs">
       <SubType>Component</SubType>
@@ -83,11 +83,11 @@
     <Compile Include="SaveDialog.Designer.cs">
       <DependentUpon>SaveDialog.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="EqFontSizeForm.resx">
+      <DependentUpon>EqFontSizeForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Form2.resx">
-      <DependentUpon>Form2.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
