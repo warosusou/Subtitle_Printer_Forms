@@ -108,7 +108,7 @@ namespace Subtitle_Printer
 
         }
 
-        private void editorFontSelectButton_Click(object sender, EventArgs e)
+        private void EditorFontSelectButton_Click(object sender, EventArgs e)
         {
             fontDialog1.Font = new Font(textBox.Font.Name, textBox.Font.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
@@ -117,7 +117,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void printFontSelectButton_Click(object sender, EventArgs e)
+        private void PrintFontSelectButton_Click(object sender, EventArgs e)
         {
             fontDialog1.Font = new Font(PrintingFont.Name, PrintingFont.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
@@ -128,7 +128,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void textSaveButton_Click(object sender, EventArgs e)
+        private void TextSaveButton_Click(object sender, EventArgs e)
         {
             string path;
             if (textPath == "") { path = Environment.CurrentDirectory; }
@@ -143,7 +143,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void textLoadButton_Click(object sender, EventArgs e)
+        private void TextLoadButton_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
             openFileDialog1.InitialDirectory = Environment.CurrentDirectory;
@@ -154,7 +154,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void screenResolutionButton_Click(object sender, EventArgs e)
+        private void ScreenResolutionButton_Click(object sender, EventArgs e)
         {
             var r = new ResolutionForm(pictureBox1.Size);
             if (r.ShowDialog() == DialogResult.OK)
@@ -163,7 +163,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void eqSizeButton_Click(object sender, EventArgs e)
+        private void EqSizeButton_Click(object sender, EventArgs e)
         {
             var f = new EqFontSizeForm(ImageDrawer.pictureBox1,ImageDrawer.EQSize,ImageDrawer.AutoShrink);
             f.ShowDialog();
@@ -391,7 +391,7 @@ namespace Subtitle_Printer
             };
         }
 
-        private void printButton_Click(object sender, EventArgs e)
+        private void PrintButton_Click(object sender, EventArgs e)
         {
             SaveSubtitles();
         }

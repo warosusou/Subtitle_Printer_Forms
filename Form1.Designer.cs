@@ -81,7 +81,7 @@
             this.eqSizeButton.TabIndex = 9;
             this.eqSizeButton.Text = "数式サイズ";
             this.eqSizeButton.UseVisualStyleBackColor = true;
-            this.eqSizeButton.Click += new System.EventHandler(this.eqSizeButton_Click);
+            this.eqSizeButton.Click += new System.EventHandler(this.EqSizeButton_Click);
             // 
             // screenResolutionButton
             // 
@@ -91,7 +91,7 @@
             this.screenResolutionButton.TabIndex = 8;
             this.screenResolutionButton.Text = "画像解像度";
             this.screenResolutionButton.UseVisualStyleBackColor = true;
-            this.screenResolutionButton.Click += new System.EventHandler(this.screenResolutionButton_Click);
+            this.screenResolutionButton.Click += new System.EventHandler(this.ScreenResolutionButton_Click);
             // 
             // textLoadButton
             // 
@@ -101,7 +101,7 @@
             this.textLoadButton.TabIndex = 7;
             this.textLoadButton.Text = "テキスト読込";
             this.textLoadButton.UseVisualStyleBackColor = true;
-            this.textLoadButton.Click += new System.EventHandler(this.textLoadButton_Click);
+            this.textLoadButton.Click += new System.EventHandler(this.TextLoadButton_Click);
             // 
             // textSaveButton
             // 
@@ -111,7 +111,7 @@
             this.textSaveButton.TabIndex = 6;
             this.textSaveButton.Text = "テキスト保存";
             this.textSaveButton.UseVisualStyleBackColor = true;
-            this.textSaveButton.Click += new System.EventHandler(this.textSaveButton_Click);
+            this.textSaveButton.Click += new System.EventHandler(this.TextSaveButton_Click);
             // 
             // printFontSelectButton
             // 
@@ -121,7 +121,7 @@
             this.printFontSelectButton.TabIndex = 5;
             this.printFontSelectButton.Text = "印刷用フォント";
             this.printFontSelectButton.UseVisualStyleBackColor = true;
-            this.printFontSelectButton.Click += new System.EventHandler(this.printFontSelectButton_Click);
+            this.printFontSelectButton.Click += new System.EventHandler(this.PrintFontSelectButton_Click);
             // 
             // editorFontSelect
             // 
@@ -131,7 +131,7 @@
             this.editorFontSelect.TabIndex = 4;
             this.editorFontSelect.Text = "エディタフォント";
             this.editorFontSelect.UseVisualStyleBackColor = true;
-            this.editorFontSelect.Click += new System.EventHandler(this.editorFontSelectButton_Click);
+            this.editorFontSelect.Click += new System.EventHandler(this.EditorFontSelectButton_Click);
             // 
             // alignRightRadioButton
             // 
@@ -178,7 +178,7 @@
             this.printButton.TabIndex = 0;
             this.printButton.Text = "印刷";
             this.printButton.UseVisualStyleBackColor = true;
-            this.printButton.Click += new System.EventHandler(this.printButton_Click);
+            this.printButton.Click += new System.EventHandler(this.PrintButton_Click);
             // 
             // Reference_TextBox
             // 
