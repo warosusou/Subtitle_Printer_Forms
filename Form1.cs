@@ -17,28 +17,28 @@ namespace Subtitle_Printer
 {
     public partial class Form1 : Form
     {
-        const string begintag = "$";
-        const string endtag = "$";
-        ImeReadableTextBox textBox;
-        Color TextColor;
-        int currentline = -1;
-        int lasttextag = -1;
-        Font printingfont;
-        string text_path = "";
-        string OriginalFormTitle;
-        bool Modified = false;
-        bool EQ = false;
+        private const string beginTag = "$";
+        private const string endTag = "$";
+        private ImeReadableRichTextBox textBox;
+        private Color textColor;
+        private int currentLine = -1;
+        private int lastTextTag = -1;
+        private Font printingFont;
+        private string textPath = "";
+        private string originalFormTitle;
+        private bool modified = false;
+        private bool EQ = false;
 
         Font PrintingFont
         {
-            get { return printingfont; }
-            set { printingfont = value; ImageDrawer.PrintingFont = printingfont; }
+            get { return printingFont; }
+            set { printingFont = value; ImageDrawer.PrintingFont = printingFont; }
         }
 
         public Form1()
         {
             InitializeComponent();
-            textBox = new ImeReadableTextBox
+            textBox = new ImeReadableRichTextBox
             {
                 Size = Reference_TextBox.Size,
                 Location = Reference_TextBox.Location,
@@ -57,32 +57,32 @@ namespace Subtitle_Printer
             textBox.Click += TextBox_Click;
             this.Controls.Add(textBox);
             Reference_TextBox.Visible = false;
-            TextColor = textBox.SelectionColor;
+            textColor = textBox.SelectionColor;
             PrintingFont = new Font("メイリオ", 20);
-            //ImageGenerator.Alignmentを設定さするためにradioButton_Checkedを発火
+            //ImageGenerator.Alignmentを設定させるためにradioButton_Checkedを発火
             panel1.Controls.OfType<RadioButton>().Single(x => x.Checked == true).Checked = true;
             toolStripStatusLabel1.Text = "";
-            OriginalFormTitle = this.Text;
+            originalFormTitle = this.Text;
             this.Text += " - 無題";
             this.ActiveControl = textBox;
             ImageDrawer.pictureBox1 = pictureBox1.Size;
             LineChangeDetector();
-            button7.Visible = true;
+            eqSizeButton.Visible = true;
             ImageDrawer.EQSize = PrintingFont.Size;
             ImageDrawer.AutoShrink = true;
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (!Modified) return;
+            if (!modified) return;
             string name;
-            if (text_path == "") name = "無題";
-            else name = new DirectoryInfo(text_path).Name;
+            if (textPath == "") name = "無題";
+            else name = new DirectoryInfo(textPath).Name;
             var sd = new SaveDialog(name);
             switch (sd.ShowDialog())
             {
                 case DialogResult.Yes:
-                    if (text_path == "")
+                    if (textPath == "")
                     {
                         string path = Environment.CurrentDirectory;
                         saveFileDialog1.FileName = "Subtitle.txt";
@@ -90,13 +90,13 @@ namespace Subtitle_Printer
                         saveFileDialog1.InitialDirectory = path;
                         if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                         {
-                            SaveText(text_path);
+                            SaveText(textPath);
                         }
                         else e.Cancel = true;
                     }
                     else
                     {
-                        SaveText(text_path);
+                        SaveText(textPath);
                     }
                     break;
                 case DialogResult.No:
@@ -108,7 +108,7 @@ namespace Subtitle_Printer
 
         }
 
-        private void Button2_Click(object sender, EventArgs e)
+        private void editorFontSelectButton_Click(object sender, EventArgs e)
         {
             fontDialog1.Font = new Font(textBox.Font.Name, textBox.Font.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
@@ -117,7 +117,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void Button3_Click(object sender, EventArgs e)
+        private void printFontSelectButton_Click(object sender, EventArgs e)
         {
             fontDialog1.Font = new Font(PrintingFont.Name, PrintingFont.Size);
             if (fontDialog1.ShowDialog() == DialogResult.OK)
@@ -128,33 +128,33 @@ namespace Subtitle_Printer
             }
         }
 
-        private void Button4_Click(object sender, EventArgs e)
+        private void textSaveButton_Click(object sender, EventArgs e)
         {
             string path;
-            if (text_path == "") { path = Environment.CurrentDirectory; }
-            else { path = new DirectoryInfo(text_path).Parent.FullName; }
+            if (textPath == "") { path = Environment.CurrentDirectory; }
+            else { path = new DirectoryInfo(textPath).Parent.FullName; }
             saveFileDialog1.FileName = "Subtitle.txt";
             saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
             saveFileDialog1.InitialDirectory = path;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                text_path = saveFileDialog1.FileName;
-                SaveText(text_path);
+                textPath = saveFileDialog1.FileName;
+                SaveText(textPath);
             }
         }
 
-        private void Button5_Click(object sender, EventArgs e)
+        private void textLoadButton_Click(object sender, EventArgs e)
         {
             openFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
             openFileDialog1.InitialDirectory = Environment.CurrentDirectory;
             if (openFileDialog1.ShowDialog() == DialogResult.OK)
             {
-                text_path = openFileDialog1.FileName;
-                LoadText(text_path);
+                textPath = openFileDialog1.FileName;
+                LoadText(textPath);
             }
         }
 
-        private void Button6_Click(object sender, EventArgs e)
+        private void screenResolutionButton_Click(object sender, EventArgs e)
         {
             var r = new ResolutionForm(pictureBox1.Size);
             if (r.ShowDialog() == DialogResult.OK)
@@ -163,7 +163,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void Button7_Click(object sender, EventArgs e)
+        private void eqSizeButton_Click(object sender, EventArgs e)
         {
             var f = new EqFontSizeForm(ImageDrawer.pictureBox1,ImageDrawer.EQSize,ImageDrawer.AutoShrink);
             f.ShowDialog();
@@ -177,15 +177,15 @@ namespace Subtitle_Printer
 
         private void RadioButton_CheckedChanged(object sender, EventArgs e)
         {
-            if (radioButton1.Checked)
+            if (alignLeftRadioButton.Checked)
             {
                 ImageDrawer.Alignment = Alignment.Left;
             }
-            else if (radioButton2.Checked)
+            else if (alignCenterRadioButton.Checked)
             {
                 ImageDrawer.Alignment = Alignment.Center;
             }
-            else if (radioButton3.Checked)
+            else if (alignRightRadioButton.Checked)
             {
                 ImageDrawer.Alignment = Alignment.Right;
             }
@@ -240,8 +240,8 @@ namespace Subtitle_Printer
                 Leave_EQmode();
             }*/
             //}
-            if (!Modified) this.Text += " *";
-            Modified = true;
+            if (!modified) this.Text += " *";
+            modified = true;
             if (e.KeyCode == Keys.Enter || e.KeyCode == Keys.Left || e.KeyCode == Keys.Right || e.KeyCode == Keys.Up || e.KeyCode == Keys.Down || e.KeyCode == Keys.Back || e.KeyCode == Keys.PageUp || e.KeyCode == Keys.PageDown || e.KeyCode == Keys.Home || e.KeyCode == Keys.End)
             {
                 var t = new Timer { Interval = 10, Enabled = true };
@@ -255,23 +255,23 @@ namespace Subtitle_Printer
             }
             else if (e.KeyCode == Keys.S && e.Modifiers == Keys.Control)
             {
-                if (text_path == "")
+                if (textPath == "")
                 {
                     string path;
-                    if (text_path == "") { path = Environment.CurrentDirectory; }
-                    else { path = new DirectoryInfo(text_path).Parent.FullName; }
+                    if (textPath == "") { path = Environment.CurrentDirectory; }
+                    else { path = new DirectoryInfo(textPath).Parent.FullName; }
                     saveFileDialog1.FileName = "Subtitle.txt";
                     saveFileDialog1.Filter = "テキストファイル(*.txt)|*.txt";
                     saveFileDialog1.InitialDirectory = path;
                     if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                     {
-                        text_path = saveFileDialog1.FileName;
-                        SaveText(text_path);
+                        textPath = saveFileDialog1.FileName;
+                        SaveText(textPath);
                     }
                 }
                 else
                 {
-                    SaveText(text_path);
+                    SaveText(textPath);
                 }
             }
             else if (e.KeyCode == Keys.T && e.Modifiers == Keys.Control)
@@ -280,7 +280,7 @@ namespace Subtitle_Printer
             }
         }
 
-        private void TextBox_ImeCompositionHira(object sender, ImeReadableTextBox.ImeCompositionEventArgs e)
+        private void TextBox_ImeCompositionHira(object sender, ImeReadableRichTextBox.ImeCompositionEventArgs e)
         {
             /*
             if (e.InputString == "￥" && !EQ)
@@ -305,7 +305,7 @@ namespace Subtitle_Printer
         private void EnterEQmode()
         {
             EQ = true;
-            button7.BackColor = SystemColors.ActiveCaption;
+            eqSizeButton.BackColor = SystemColors.ActiveCaption;
             //this.Text += " - EQ mode";
         }
 
@@ -315,7 +315,7 @@ namespace Subtitle_Printer
             //textBox.SelectionLength = 0;
             //textBox.SelectionColor = TextColor;
             //textBox.ImeMode = ImeMode.Hiragana;
-            button7.BackColor = SystemColors.Control;
+            eqSizeButton.BackColor = SystemColors.Control;
             //this.Text = "Form1";
         }
 
@@ -323,41 +323,41 @@ namespace Subtitle_Printer
         {
             //if (!EQ) return;
             int previousSelectionStart = textBox.SelectionStart;
-            textBox.Text = textBox.Text.Insert(previousSelectionStart, begintag);
-            previousSelectionStart += begintag.Length;
+            textBox.Text = textBox.Text.Insert(previousSelectionStart, beginTag);
+            previousSelectionStart += beginTag.Length;
             textBox.SelectionStart = previousSelectionStart;
-            textBox.Text = textBox.Text.Insert(previousSelectionStart, endtag);
-            lasttextag = previousSelectionStart;
+            textBox.Text = textBox.Text.Insert(previousSelectionStart, endTag);
+            lastTextTag = previousSelectionStart;
             var t = new Timer { Interval = 1, Enabled = true };
-            t.Tick += (s, e) => { t.Enabled = false; textBox.SelectionStart = lasttextag; };
+            t.Tick += (s, e) => { t.Enabled = false; textBox.SelectionStart = lastTextTag; };
         }
 
         private void DeleteEQTag()
         {
-            if (currentline < 0 || currentline >= textBox.Lines.Length) return;
-            var text = textBox.Lines[currentline];
-            var begin = text.Contains(begintag);
-            var end = text.Contains(endtag);
+            if (currentLine < 0 || currentLine >= textBox.Lines.Length) return;
+            var text = textBox.Lines[currentLine];
+            var begin = text.Contains(beginTag);
+            var end = text.Contains(endTag);
             if (begin && !end)
             {
-                text = text.Remove(text.IndexOf(begintag), begintag.Length);
+                text = text.Remove(text.IndexOf(beginTag), beginTag.Length);
             }
             else if (!begin && end)
             {
-                text = text.Remove(text.IndexOf(endtag), endtag.Length);
+                text = text.Remove(text.IndexOf(endTag), endTag.Length);
             }
             else if (begin && end)
             {
-                Regex r = new Regex(String.Format("(?<={0}).*(?={1})", begintag, endtag));
+                Regex r = new Regex(String.Format("(?<={0}).*(?={1})", beginTag, endTag));
                 var match = r.Match(text).Value;
                 while (match.EndsWith(" ") || match.EndsWith("　")) { match.Remove(match.Length - 1, 1); }
                 if (match == "")
                 {
-                    text = text.Remove(text.IndexOf(begintag), begintag.Length);
-                    text = text.Remove(text.IndexOf(endtag), begintag.Length);
+                    text = text.Remove(text.IndexOf(beginTag), beginTag.Length);
+                    text = text.Remove(text.IndexOf(endTag), beginTag.Length);
                 }
             }
-            textBox.Lines[currentline] = text;
+            textBox.Lines[currentLine] = text;
         }
 
         private void SaveText(string path)
@@ -366,8 +366,8 @@ namespace Subtitle_Printer
             sw.Write(textBox.Text);
             sw.Close();
             Notice(String.Format("{0}として保存しました", new DirectoryInfo(path).Name));
-            this.Text = OriginalFormTitle + " - " + new DirectoryInfo(path).Name;
-            Modified = false;
+            this.Text = originalFormTitle + " - " + new DirectoryInfo(path).Name;
+            modified = false;
         }
 
         private void LoadText(string path)
@@ -376,8 +376,8 @@ namespace Subtitle_Printer
             textBox.Text = sw.ReadToEnd();
             sw.Close();
             Notice(String.Format("{0}を読み込みました", new DirectoryInfo(path).Name));
-            this.Text = OriginalFormTitle + " - " + new DirectoryInfo(path).Name;
-            Modified = false;
+            this.Text = originalFormTitle + " - " + new DirectoryInfo(path).Name;
+            modified = false;
         }
 
         private void Notice(string message)
@@ -391,7 +391,7 @@ namespace Subtitle_Printer
             };
         }
 
-        private void Button1_Click(object sender, EventArgs e)
+        private void printButton_Click(object sender, EventArgs e)
         {
             SaveSubtitles();
         }
@@ -408,7 +408,7 @@ namespace Subtitle_Printer
                 else if (currentline >= textBox.Lines.Length - 1) { break; }
                 currentline++;
             }
-            if (currentline != this.currentline) { this.currentline = currentline; }
+            if (currentline != this.currentLine) { this.currentLine = currentline; }
             PrintSubtitle();
         }
 
@@ -584,7 +584,7 @@ namespace Subtitle_Printer
                 if (text.Contains("%")) text = text.Split('%')[0];
                 else if (text.Contains("％")) text = text.Split('％')[0];
                 if (text == "") { return result; }
-                if (text.Contains(begintag) && text.Length > text.IndexOf(begintag) + begintag.Length && text.Substring(text.IndexOf(begintag) + begintag.Length).Contains(endtag))
+                if (text.Contains(beginTag) && text.Length > text.IndexOf(beginTag) + beginTag.Length && text.Substring(text.IndexOf(beginTag) + beginTag.Length).Contains(endTag))
                 {
                     var sections = new List<Section>();
                     int result_width = 0;
@@ -592,18 +592,18 @@ namespace Subtitle_Printer
                     while (text.Length != 0)
                     {
                         string section = "";
-                        int begintagpos = text.IndexOf(begintag);
+                        int begintagpos = text.IndexOf(beginTag);
                         if (begintagpos > 0)
                         {
                             section = text.Substring(0, begintagpos);
                             text = text.Substring(begintagpos);
                         }
-                        else if(begintagpos == 0 && text.IndexOf(endtag,begintagpos + 1) > begintagpos)
+                        else if(begintagpos == 0 && text.IndexOf(endTag,begintagpos + 1) > begintagpos)
                         {
-                            section = text.Substring(0, text.IndexOf(endtag,begintagpos + 1) + endtag.Length);
-                            if (text.IndexOf(endtag, begintagpos + 1) + endtag.Length < text.Length)
+                            section = text.Substring(0, text.IndexOf(endTag,begintagpos + 1) + endTag.Length);
+                            if (text.IndexOf(endTag, begintagpos + 1) + endTag.Length < text.Length)
                             {
-                                text = text.Substring(text.IndexOf(endtag,begintagpos + 1) + endtag.Length);
+                                text = text.Substring(text.IndexOf(endTag,begintagpos + 1) + endTag.Length);
                             }
                             else
                             {
@@ -657,9 +657,9 @@ namespace Subtitle_Printer
                 set
                 {
                     text = value;
-                    if (text.Length >= begintag.Length + endtag.Length &&text.IndexOf(begintag) == 0 && text.IndexOf(endtag,text.IndexOf(begintag) + begintag.Length) == text.Length -1)
+                    if (text.Length >= beginTag.Length + endTag.Length &&text.IndexOf(beginTag) == 0 && text.IndexOf(endTag,text.IndexOf(beginTag) + beginTag.Length) == text.Length -1)
                     {
-                        text = text.Remove(0, begintag.Length).Remove(text.Length - 1 - endtag.Length, endtag.Length);
+                        text = text.Remove(0, beginTag.Length).Remove(text.Length - 1 - endTag.Length, endTag.Length);
                         Image = ImageDrawer.TexPrinter(text);
                     }
                     else

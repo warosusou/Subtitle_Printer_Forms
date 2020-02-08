@@ -29,16 +29,16 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
-            this.button7 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.radioButton3 = new System.Windows.Forms.RadioButton();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
-            this.button1 = new System.Windows.Forms.Button();
+            this.eqSizeButton = new System.Windows.Forms.Button();
+            this.screenResolutionButton = new System.Windows.Forms.Button();
+            this.textLoadButton = new System.Windows.Forms.Button();
+            this.textSaveButton = new System.Windows.Forms.Button();
+            this.printFontSelectButton = new System.Windows.Forms.Button();
+            this.editorFontSelect = new System.Windows.Forms.Button();
+            this.alignRightRadioButton = new System.Windows.Forms.RadioButton();
+            this.alignCenterRadioButton = new System.Windows.Forms.RadioButton();
+            this.alignLeftRadioButton = new System.Windows.Forms.RadioButton();
+            this.printButton = new System.Windows.Forms.Button();
             this.Reference_TextBox = new System.Windows.Forms.TextBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.fontDialog1 = new System.Windows.Forms.FontDialog();
@@ -58,127 +58,127 @@
             this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel1.Controls.Add(this.button7);
-            this.panel1.Controls.Add(this.button6);
-            this.panel1.Controls.Add(this.button5);
-            this.panel1.Controls.Add(this.button4);
-            this.panel1.Controls.Add(this.button3);
-            this.panel1.Controls.Add(this.button2);
-            this.panel1.Controls.Add(this.radioButton3);
-            this.panel1.Controls.Add(this.radioButton2);
-            this.panel1.Controls.Add(this.radioButton1);
-            this.panel1.Controls.Add(this.button1);
+            this.panel1.Controls.Add(this.eqSizeButton);
+            this.panel1.Controls.Add(this.screenResolutionButton);
+            this.panel1.Controls.Add(this.textLoadButton);
+            this.panel1.Controls.Add(this.textSaveButton);
+            this.panel1.Controls.Add(this.printFontSelectButton);
+            this.panel1.Controls.Add(this.editorFontSelect);
+            this.panel1.Controls.Add(this.alignRightRadioButton);
+            this.panel1.Controls.Add(this.alignCenterRadioButton);
+            this.panel1.Controls.Add(this.alignLeftRadioButton);
+            this.panel1.Controls.Add(this.printButton);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(892, 31);
             this.panel1.TabIndex = 1;
             // 
-            // button7
+            // eqSizeButton
             // 
-            this.button7.Location = new System.Drawing.Point(291, 3);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 9;
-            this.button7.Text = "数式サイズ";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.Button7_Click);
+            this.eqSizeButton.Location = new System.Drawing.Point(291, 3);
+            this.eqSizeButton.Name = "eqSizeButton";
+            this.eqSizeButton.Size = new System.Drawing.Size(75, 23);
+            this.eqSizeButton.TabIndex = 9;
+            this.eqSizeButton.Text = "数式サイズ";
+            this.eqSizeButton.UseVisualStyleBackColor = true;
+            this.eqSizeButton.Click += new System.EventHandler(this.eqSizeButton_Click);
             // 
-            // button6
+            // screenResolutionButton
             // 
-            this.button6.Location = new System.Drawing.Point(602, 3);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 8;
-            this.button6.Text = "画像解像度";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.Button6_Click);
+            this.screenResolutionButton.Location = new System.Drawing.Point(602, 3);
+            this.screenResolutionButton.Name = "screenResolutionButton";
+            this.screenResolutionButton.Size = new System.Drawing.Size(75, 23);
+            this.screenResolutionButton.TabIndex = 8;
+            this.screenResolutionButton.Text = "画像解像度";
+            this.screenResolutionButton.UseVisualStyleBackColor = true;
+            this.screenResolutionButton.Click += new System.EventHandler(this.screenResolutionButton_Click);
             // 
-            // button5
+            // textLoadButton
             // 
-            this.button5.Location = new System.Drawing.Point(797, 3);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(90, 23);
-            this.button5.TabIndex = 7;
-            this.button5.Text = "テキスト読込";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.Button5_Click);
+            this.textLoadButton.Location = new System.Drawing.Point(797, 3);
+            this.textLoadButton.Name = "textLoadButton";
+            this.textLoadButton.Size = new System.Drawing.Size(90, 23);
+            this.textLoadButton.TabIndex = 7;
+            this.textLoadButton.Text = "テキスト読込";
+            this.textLoadButton.UseVisualStyleBackColor = true;
+            this.textLoadButton.Click += new System.EventHandler(this.textLoadButton_Click);
             // 
-            // button4
+            // textSaveButton
             // 
-            this.button4.Location = new System.Drawing.Point(701, 3);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(90, 23);
-            this.button4.TabIndex = 6;
-            this.button4.Text = "テキスト保存";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.Button4_Click);
+            this.textSaveButton.Location = new System.Drawing.Point(701, 3);
+            this.textSaveButton.Name = "textSaveButton";
+            this.textSaveButton.Size = new System.Drawing.Size(90, 23);
+            this.textSaveButton.TabIndex = 6;
+            this.textSaveButton.Text = "テキスト保存";
+            this.textSaveButton.UseVisualStyleBackColor = true;
+            this.textSaveButton.Click += new System.EventHandler(this.textSaveButton_Click);
             // 
-            // button3
+            // printFontSelectButton
             // 
-            this.button3.Location = new System.Drawing.Point(195, 3);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(90, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "印刷用フォント";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.Button3_Click);
+            this.printFontSelectButton.Location = new System.Drawing.Point(195, 3);
+            this.printFontSelectButton.Name = "printFontSelectButton";
+            this.printFontSelectButton.Size = new System.Drawing.Size(90, 23);
+            this.printFontSelectButton.TabIndex = 5;
+            this.printFontSelectButton.Text = "印刷用フォント";
+            this.printFontSelectButton.UseVisualStyleBackColor = true;
+            this.printFontSelectButton.Click += new System.EventHandler(this.printFontSelectButton_Click);
             // 
-            // button2
+            // editorFontSelect
             // 
-            this.button2.Location = new System.Drawing.Point(99, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(90, 23);
-            this.button2.TabIndex = 4;
-            this.button2.Text = "エディタフォント";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            this.editorFontSelect.Location = new System.Drawing.Point(99, 3);
+            this.editorFontSelect.Name = "editorFontSelect";
+            this.editorFontSelect.Size = new System.Drawing.Size(90, 23);
+            this.editorFontSelect.TabIndex = 4;
+            this.editorFontSelect.Text = "エディタフォント";
+            this.editorFontSelect.UseVisualStyleBackColor = true;
+            this.editorFontSelect.Click += new System.EventHandler(this.editorFontSelectButton_Click);
             // 
-            // radioButton3
+            // alignRightRadioButton
             // 
-            this.radioButton3.AutoSize = true;
-            this.radioButton3.Location = new System.Drawing.Point(540, 6);
-            this.radioButton3.Name = "radioButton3";
-            this.radioButton3.Size = new System.Drawing.Size(56, 16);
-            this.radioButton3.TabIndex = 3;
-            this.radioButton3.TabStop = true;
-            this.radioButton3.Text = "右揃え";
-            this.radioButton3.UseVisualStyleBackColor = true;
-            this.radioButton3.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
+            this.alignRightRadioButton.AutoSize = true;
+            this.alignRightRadioButton.Location = new System.Drawing.Point(540, 6);
+            this.alignRightRadioButton.Name = "alignRightRadioButton";
+            this.alignRightRadioButton.Size = new System.Drawing.Size(56, 16);
+            this.alignRightRadioButton.TabIndex = 3;
+            this.alignRightRadioButton.TabStop = true;
+            this.alignRightRadioButton.Text = "右揃え";
+            this.alignRightRadioButton.UseVisualStyleBackColor = true;
+            this.alignRightRadioButton.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
-            // radioButton2
+            // alignCenterRadioButton
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(466, 6);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(68, 16);
-            this.radioButton2.TabIndex = 2;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "中央揃え";
-            this.radioButton2.UseVisualStyleBackColor = true;
-            this.radioButton2.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
+            this.alignCenterRadioButton.AutoSize = true;
+            this.alignCenterRadioButton.Location = new System.Drawing.Point(466, 6);
+            this.alignCenterRadioButton.Name = "alignCenterRadioButton";
+            this.alignCenterRadioButton.Size = new System.Drawing.Size(68, 16);
+            this.alignCenterRadioButton.TabIndex = 2;
+            this.alignCenterRadioButton.TabStop = true;
+            this.alignCenterRadioButton.Text = "中央揃え";
+            this.alignCenterRadioButton.UseVisualStyleBackColor = true;
+            this.alignCenterRadioButton.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
-            // radioButton1
+            // alignLeftRadioButton
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Checked = true;
-            this.radioButton1.Location = new System.Drawing.Point(404, 6);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(56, 16);
-            this.radioButton1.TabIndex = 1;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "左揃え";
-            this.radioButton1.UseVisualStyleBackColor = true;
-            this.radioButton1.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
+            this.alignLeftRadioButton.AutoSize = true;
+            this.alignLeftRadioButton.Checked = true;
+            this.alignLeftRadioButton.Location = new System.Drawing.Point(404, 6);
+            this.alignLeftRadioButton.Name = "alignLeftRadioButton";
+            this.alignLeftRadioButton.Size = new System.Drawing.Size(56, 16);
+            this.alignLeftRadioButton.TabIndex = 1;
+            this.alignLeftRadioButton.TabStop = true;
+            this.alignLeftRadioButton.Text = "左揃え";
+            this.alignLeftRadioButton.UseVisualStyleBackColor = true;
+            this.alignLeftRadioButton.CheckedChanged += new System.EventHandler(this.RadioButton_CheckedChanged);
             // 
-            // button1
+            // printButton
             // 
-            this.button1.Location = new System.Drawing.Point(3, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(90, 23);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "印刷";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.Button1_Click);
+            this.printButton.Location = new System.Drawing.Point(3, 3);
+            this.printButton.Name = "printButton";
+            this.printButton.Size = new System.Drawing.Size(90, 23);
+            this.printButton.TabIndex = 0;
+            this.printButton.Text = "印刷";
+            this.printButton.UseVisualStyleBackColor = true;
+            this.printButton.Click += new System.EventHandler(this.printButton_Click);
             // 
             // Reference_TextBox
             // 
@@ -261,24 +261,24 @@
 
         #endregion
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button printButton;
         private System.Windows.Forms.TextBox Reference_TextBox;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.RadioButton radioButton3;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.RadioButton alignRightRadioButton;
+        private System.Windows.Forms.RadioButton alignCenterRadioButton;
+        private System.Windows.Forms.RadioButton alignLeftRadioButton;
+        private System.Windows.Forms.Button editorFontSelect;
         private System.Windows.Forms.FontDialog fontDialog1;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button printFontSelectButton;
+        private System.Windows.Forms.Button textSaveButton;
+        private System.Windows.Forms.Button textLoadButton;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button7;
+        private System.Windows.Forms.Button screenResolutionButton;
+        private System.Windows.Forms.Button eqSizeButton;
     }
 }
 

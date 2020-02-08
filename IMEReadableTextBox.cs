@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Subtitle_Printer
 {
-    public class ImeReadableTextBox : RichTextBox
+    public class ImeReadableRichTextBox : RichTextBox
     {
         public delegate void ImeCompositionEventHandler(object sender, ImeCompositionEventArgs e);
 
